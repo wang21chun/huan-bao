@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const Promise = require('promise');
-const dbConfig = require('../../db.config.json');
+const config = require('../../package.json');
 const path = require('path');
 let mongoDB;
 
@@ -27,7 +27,7 @@ class DB {
 
 const getMongodbUrl = () =>{
     //'mongodb://192.168.1.25:27017/test';
-    let mongodb = dbConfig.mongodb;
+    let mongodb = config.mongodb;
     let url = ['mongodb://'];
     url.push(mongodb.ip);
     url.push(":" + mongodb.port || '27017');
