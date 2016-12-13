@@ -7,7 +7,7 @@ import routers from './routes.js';
 import BootstrapCss from '../../node_modules/bootstrap/dist/css/bootstrap.css';
 import jquery from '../../node_modules/jquery/dist/jquery.js';
 import BootstrapJS from '../../node_modules/bootstrap/dist/js/bootstrap.js';
-
+import released from './released.vue';
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -35,4 +35,7 @@ const store = new Vuex.Store({
 const app = new Vue({
     router: router,
     store:store,
+    components:{
+    	'released':released
+    }
 }).$mount('#app');
