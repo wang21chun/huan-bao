@@ -6,13 +6,13 @@ const automated = require('../src/service/search/automated.js');
 const goodsSearch = require('../src/service/search/goods.js');
 
 /* GET home page. */
-router.get('/', (req, res, next) =>{
+router.get('/', (req, res, next) => {
     res.render('index', {
         title: 'Express'
     });
 });
 
-router.get('/list', (req, res, next) =>{
+router.get('/list', (req, res, next) => {
     let k = req.query.v.toLowerCase();
 
     goodsSearch.queryList(k).then((result) => {

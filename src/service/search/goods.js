@@ -26,5 +26,4 @@ class GoodsSearch{
         });
     }
 }
-
 module.exports = new GoodsSearch();
