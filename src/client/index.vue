@@ -20,7 +20,7 @@
     </div>
 </template>
 <script>
-import released from './released.vue';
+
 export default {
     data: function() {
         return {
