@@ -17,5 +17,16 @@ module.exports = {
                 else resolve();
             });
         });
+    },
+    copyFile:function(inPaths,outPaths){
+        return new Promise((resolve, reject) => {
+            for (let i = 0, length = inPaths.length; i < length; i++) {
+                let readPath = inPaths[i];
+                let writePath = outPaths[i];
+                this.readFile(readPath)
+                .then(data => this.writeFile(writePath, data), err => reject(err))
+                .then(() => resolve(), err => reject(err));
+            }
+        });
     }
 }

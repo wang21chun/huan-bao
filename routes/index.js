@@ -50,21 +50,21 @@ router.get('/automatedSearch', (req, res, next) => {
 });
 
 router.post('/upload', (req, res, next) => {
-    var form = new multiparty.Form();
+    let form = new multiparty.Form();
     form.parse(req, (err, fields, files) => {
-        let name = files.file[0].originalFilename;
-        let readPath = files.file[0].path;
-        let writePath = path.join(basePath, name);
-        fileUtil.readFile(readPath)
-            .then(data => fileUtil.writeFile(writePath, data), err => {
-                console.log(err);
-            })
-            .then(() => res.json(writePath), err => {
-                console.log(err);
-            });
+        let inPaths = [];
+        let outPaths = [];
+        for (let i = 0, length = files.file.length; i < length; i++) {
+            let name = files.file[i].originalFilename;
+            let readPath = files.file[i].path;
+            let writePath = path.join(basePath, name);
+            inPaths.push(readPath);
+            outPaths.push(writePath);
+        }
+        fileUtil.copyFile(inPaths,outPaths)
+        .then(()=>res.json(outPaths),err=>{});
+
     });
-
-
 });
 
 module.exports = router;
