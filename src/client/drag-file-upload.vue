@@ -1,7 +1,7 @@
 <template>
     <div class="progress" @dragenter.prevent="dragenter" @dragover.prevent="dragover" @dragleave.prevent="dragleave" @dragend.prevent="dragend" @drop.prevent="drop" @dragstart.prevent="dragstart">
         <div class="progress-bar" :style="{width:progressSize+'%'}">
-            <span v-show="!show">已完成{{progressSize}}%</span>
+            <span v-show="!show">{{loaded}}/{{fileSize}} 已完成-{{progressSize}}%</span>
         </div>
         <p class="progress-text" v-show="show">拖入上传文件！</p>
     </div>
@@ -11,18 +11,42 @@ export default {
     data: function() {
         return {
             types: [],
-            progress: 0
+            fileTotalSize:0,
+            loadedSize:0,
         };
     },
     computed: {
         progressSize: function() {
-            return this.progress;
+            return parseInt(this.loadedSize / this.fileTotalSize * 100);
         },
         show:function(){
-            return this.progress > 0 ? false : true;
+            return this.progressSize > 0 ? false : true;
+        },
+        fileSize:function(){
+            return this.toByte(this.fileTotalSize);
+        },
+        loaded:function(){
+            return this.toByte(this.loadedSize);
         }
     },
     methods: {
+        toByte:function(val){
+            if(val > 1000){
+                return this.toKB(val);
+            }
+            return (Math.round(val * 100) / 100).toFixed(1)+'Byte';
+        },
+        toKB:function(val){
+            val = val / 1000;
+            if(val > 1000){
+                return this.toMB(val);
+            }
+            return (Math.round(val * 100) / 100).toFixed(1)+'KB';
+        },
+        toMB:function(val){
+            val = val / 1000;
+            return (Math.round(val * 100) / 100).toFixed(1)+'M';
+        },
         dragenter: function(event) {
             //console.log(event)
         },
@@ -38,18 +62,21 @@ export default {
         drop: function(event) {
             let files = event.dataTransfer.files;
             let formData = new FormData();
+            let fileTotalSize = 0;
+            console.log(files)
             for (let i = 0, length = files.length; i < length; i++) {
                 formData.append('file', files[i]);
+                fileTotalSize += files[i].size;
             }
+            this.$set(this,'fileTotalSize', fileTotalSize);
             this.$http.post('/upload', formData, {
                     progress: (event) => {
-                        let progress = parseInt(event.loaded / event.total * 100);
-                        this.$set(this, 'progress', progress);
+                        this.$set(this, 'loadedSize', event.loaded);
                     }
                 })
                 .then((res) => {
                     console.log(res)
-                    this.$set(this, 'progress', 0);
+                    this.$set(this, 'loadedSize', 0);
                 }, (err) => {
                     console.log(err)
                 })
@@ -91,5 +118,7 @@ export default {
 
 .progress>.progress-text {
     padding: 0px 10px;
+    font-size: 18px;
+    color: #888;
 }
 </style>
